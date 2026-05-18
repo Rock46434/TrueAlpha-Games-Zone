@@ -50,7 +50,6 @@
             position: relative;
         }
 
-        /* DYNAMIC GAME PAD CONTROLLER WATERMARK BACKGROUND */
         body::before {
             content: "\f11b";
             font-family: "Font Awesome 6 Free";
@@ -64,7 +63,6 @@
             z-index: -1;
         }
 
-        /* MODERN CLEAN PRELOADER */
         #user-loader {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
@@ -82,7 +80,6 @@
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* HEADER & LOGO ARCHITECTURE */
         .navbar {
             background-color: var(--bg-navbar);
             border-bottom: 1px solid var(--border-color);
@@ -122,7 +119,6 @@
         }
         .theme-toggle-btn:hover { border-color: var(--cyan-glow); color: var(--cyan-glow); }
 
-        /* HERO PANEL */
         .hero {
             padding: 50px 5% 30px 5%; text-align: center;
             background: linear-gradient(180deg, var(--glass-tint) 0%, transparent 100%);
@@ -131,7 +127,6 @@
         .hero h1 span { background: linear-gradient(45deg, var(--cyan-glow), #4facfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .hero p { color: var(--text-muted); font-size: 0.95rem; max-width: 650px; margin: 0 auto 25px auto; }
 
-        /* COMPACT GAMES FILTER INTERFACE */
         .filter-container { display: flex; justify-content: center; gap: 10px; margin-bottom: 35px; }
         .filter-btn {
             background-color: var(--bg-card); border: 1px solid var(--border-color);
@@ -143,7 +138,6 @@
             border-color: transparent; color: #000; font-weight: 800; transform: translateY(-1px);
         }
 
-        /* GRID CONTENT & CARDS - MAXIMUM PICTURE FOCUS */
         .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 25px; padding: 0 5% 60px 5%; }
         
         .game-card {
@@ -154,7 +148,6 @@
         }
         .game-card:hover { transform: translateY(-5px); border-color: rgba(0, 242, 254, 0.3); box-shadow: 0 12px 30px rgba(0, 242, 254, 0.08); }
 
-        /* Picha inapewa nafasi kubwa ya kuonekana (240px tall) */
         .card-img-wrapper { 
             position: relative; 
             width: 100%; 
@@ -182,7 +175,16 @@
         .dl-btn-premium:hover { box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3); }
         .price-text { font-family: monospace; font-size: 1.05rem; font-weight: 800; color: #ff9100; display: block; margin-bottom: 12px; text-align: center; }
 
-        /* MODAL POP-UP SYSTEM */
+        .scroll-loading-indicator {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 20px;
+            display: none;
+            color: var(--cyan-glow);
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(4, 6, 10, 0.9); backdrop-filter: blur(15px); z-index: 2000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: 0.3s ease; }
         .modal-overlay.open { opacity: 1; visibility: visible; }
         .pay-modal { background-color: var(--bg-card); border: 1px solid var(--border-color); width: 92%; max-width: 480px; border-radius: 16px; padding: 25px; position: relative; transform: scale(0.95); transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-height: 90vh; overflow-y: auto; }
@@ -205,7 +207,7 @@
         .submit-pay-btn { width: 100%; background: linear-gradient(135deg, #00e676 0%, #00c853 100%); color: #000; border: none; padding: 12px; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 6px; }
 
         /* ==========================================================================
-           ROBOT ICON BUTTON WIDGET & CHAT WINDOW (PERFECT INTEGRATION)
+           ROBOT ICON BUTTON WIDGET & CHAT WINDOW
            ========================================================================== */
         .ai-chat-anchor {
             position: fixed; bottom: 25px; left: 25px; z-index: 1500;
@@ -252,7 +254,6 @@
         .ai-chat-input-area input { flex-grow: 1; background-color: var(--bg-input); border: 1px solid var(--border-color); padding: 10px 12px; border-radius: 8px; color: var(--text-main); outline: none; font-size: 0.85rem; }
         .ai-chat-input-area button { background: var(--cyan-glow); border: none; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #000; font-size: 0.9rem; transition: 0.2s; }
 
-        /* TOAST SYSTEM */
         .toast-box { position: fixed; bottom: 25px; right: 25px; background-color: #10b981; color: white; padding: 14px 22px; border-radius: 10px; font-weight: 700; display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transform: translateY(150px); opacity: 0; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 9999; font-size: 0.85rem; }
         .toast-box.show { transform: translateY(0); opacity: 1; }
 
@@ -303,7 +304,11 @@
     </section>
 
     <main class="games-grid" id="publicGamesGrid">
-        </main>
+    </main>
+    
+    <div class="scroll-loading-indicator" id="scrollLoadIndicator">
+        <i class="fa-solid fa-spinner fa-spin"></i> Tunapakia magame mengine ya kijanja...
+    </div>
 
     <div class="ai-chat-anchor" onclick="toggleAiChatWindow()" id="aiRobotButton">
         <i class="fa-solid fa-robot"></i>
@@ -316,7 +321,7 @@
         </div>
         <div class="ai-chat-messages" id="aiChatMessages">
             <div class="chat-bubble bubble-ai">
-                Mambo vipi mkuu! Mimi ni Alpha Core AI. Nina uelewa mkubwa kama binadamu. Niulize jambo lolote, iwe kuhusu magame au mambo ya nje binafsi!
+                Mambo vipi mkuu! Mimi ni Alpha Core AI. Nina uelewa mkubwa sana sasa hivi. Niulize jambo lolote kuhusu maisha, elimu, teknolojia, au magame na nitakujibu kwa usahihi wa hali ya juu!
             </div>
         </div>
         <div class="ai-chat-input-area">
@@ -371,7 +376,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, onValue, push, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, get, query, orderByKey, limitToFirst, startAfter, push, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDGR_Ej-g6-u3SLlRL_W8_FOsezTKXfpkI",
@@ -387,8 +392,13 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        let globalCatalogDataStore = null; 
+        let loadedGamesDataStore = {}; 
+        let approvedUserPaymentsStore = {}; 
         let currentActiveFilter = 'All';
+        let lastLoadedKey = null; 
+        let isFetchingNextBatch = false;
+        let hasMoreGamesToLoad = true;
+        const ITEMS_PER_PAGE = 10;
 
         window.showToast = function(message, statusOk = true) {
             const toast = document.getElementById('toastAlert');
@@ -400,34 +410,104 @@
             setTimeout(() => { toast.classList.remove('show'); }, 4500);
         }
 
-        const databaseRootGamesRef = ref(db, 'games');
-        onValue(databaseRootGamesRef, (snapshot) => {
-            const clusterData = snapshot.val();
-            if(clusterData && Object.keys(clusterData).length > 0) {
-                globalCatalogDataStore = clusterData;
-                executeUIRenderCycle(globalCatalogDataStore);
-            } else {
-                globalCatalogDataStore = {};
-                displayEmptyPlaceholder();
+        function startListeningToApprovedPayments() {
+            const storedTxId = localStorage.getItem('truealpha_last_tx_id');
+            if (!storedTxId) return;
+
+            const paymentsRef = ref(db, 'payments');
+            onValue(paymentsRef, (snapshot) => {
+                const allPayments = snapshot.val();
+                if (allPayments) {
+                    Object.keys(allPayments).forEach(pId => {
+                        const payment = allPayments[pId];
+                        if (payment.transactionId === storedTxId && payment.status === 'Approved') {
+                            approvedUserPaymentsStore[payment.gameId] = true;
+                        }
+                    });
+                    if (Object.keys(loadedGamesDataStore).length > 0) {
+                        executeUIRenderCycle(loadedGamesDataStore);
+                    }
+                }
+            });
+        }
+
+        startListeningToApprovedPayments();
+
+        async function fetchGamesBatch(isInitialLoad = false) {
+            if (isFetchingNextBatch || (!hasMoreGamesToLoad && !isInitialLoad)) return;
+            
+            isFetchingNextBatch = true;
+            if (!isInitialLoad) {
+                document.getElementById('scrollLoadIndicator').style.display = 'block';
             }
 
-            setTimeout(() => {
-                const loader = document.getElementById('user-loader');
-                if(loader) {
-                    loader.style.opacity = '0';
-                    setTimeout(() => {
-                        loader.style.visibility = 'hidden';
-                        window.showToast("Mifumo yote ipo tayari. Karibu!");
-                    }, 400);
+            try {
+                let batchQuery;
+                const baseDbRef = ref(db, 'games');
+
+                if (isInitialLoad) {
+                    batchQuery = query(baseDbRef, orderByKey(), limitToFirst(ITEMS_PER_PAGE));
+                } else {
+                    batchQuery = query(baseDbRef, orderByKey(), startAfter(lastLoadedKey), limitToFirst(ITEMS_PER_PAGE));
                 }
-            }, 500);
+
+                const snapshot = await get(batchQuery);
+                const newData = snapshot.val();
+
+                if (newData && Object.keys(newData).length > 0) {
+                    const keys = Object.keys(newData);
+                    lastLoadedKey = keys[keys.length - 1];
+
+                    Object.assign(loadedGamesDataStore, newData);
+
+                    if (keys.length < ITEMS_PER_PAGE) {
+                        hasMoreGamesToLoad = false;
+                    }
+
+                    executeUIRenderCycle(loadedGamesDataStore);
+                } else {
+                    hasMoreGamesToLoad = false;
+                    if (isInitialLoad) {
+                        loadedGamesDataStore = {};
+                        displayEmptyPlaceholder();
+                    }
+                }
+            } catch (error) {
+                console.error("Pagination Error:", error);
+                window.showToast("Hitilafu imetokea wakati wa kuvuta data!", false);
+            } finally {
+                isFetchingNextBatch = false;
+                document.getElementById('scrollLoadIndicator').style.display = 'none';
+
+                if (isInitialLoad) {
+                    const loader = document.getElementById('user-loader');
+                    if (loader) {
+                        loader.style.opacity = '0';
+                        setTimeout(() => {
+                            loader.style.visibility = 'hidden';
+                            window.showToast("Mifumo yote ipo tayari. Karibu!");
+                        }, 400);
+                    }
+                }
+            }
+        }
+
+        fetchGamesBatch(true);
+
+        window.addEventListener('scroll', () => {
+            if ((window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 150)) {
+                const isSearching = document.getElementById('userSearchInp').value.trim() !== "";
+                if (!isSearching && hasMoreGamesToLoad) {
+                    fetchGamesBatch(false);
+                }
+            }
         });
 
         function displayEmptyPlaceholder() {
             document.getElementById('publicGamesGrid').innerHTML = `
                 <div style="text-align:center; color:var(--text-muted); grid-column:1/-1; padding:65px 20px;">
                     <i class="fa-solid fa-cubes" style="font-size:2.5rem; margin-bottom:12px; color:rgba(0, 242, 254, 0.2);"></i>
-                    <p style="font-size:1rem; font-weight:600;">Bado hakuna game lolote kwa sasa.</p>
+                    <p style="font-size:1rem; font-weight:600;">Bado hakuna game lolote hapa.</p>
                 </div>
             `;
         }
@@ -436,26 +516,42 @@
             const grid = document.getElementById('publicGamesGrid');
             grid.innerHTML = "";
 
-            if (!targetRecords || Object.keys(targetRecords).length === 0) {
+            let itemsToDisplay = {};
+
+            Object.keys(targetRecords).forEach(k => {
+                if (currentActiveFilter === 'All' || targetRecords[k].access === currentActiveFilter) {
+                    itemsToDisplay[k] = targetRecords[k];
+                }
+            });
+
+            if (Object.keys(itemsToDisplay).length === 0) {
                 displayEmptyPlaceholder();
                 return;
             }
 
-            Object.keys(targetRecords).forEach(idKey => {
-                const nodeItem = targetRecords[idKey];
+            Object.keys(itemsToDisplay).forEach(idKey => {
+                const nodeItem = itemsToDisplay[idKey];
                 const premiumState = nodeItem.access === 'Premium';
                 const premiumTagClass = premiumState ? 'tag-premium' : 'tag-free';
                 const priceLabelText = premiumState ? `${parseFloat(nodeItem.price).toLocaleString()} TZS` : 'FREE FILE';
 
+                const isGameUnlockedForUser = approvedUserPaymentsStore[idKey] === true;
+
                 let executionLinksMarkup = "";
-                if(premiumState) {
+                
+                if(premiumState && !isGameUnlockedForUser) {
                     executionLinksMarkup = `
                         <span class="price-text"><i class="fa-solid fa-tags"></i> Bei: ${priceLabelText}</span>
                         <button class="dl-btn dl-btn-premium" onclick="openPayModal('${idKey}', '${nodeItem.title.replace(/'/g, "\\'")}', '${nodeItem.price}', '${nodeItem.image}')">
                             <i class="fa-solid fa-lock"></i> Lipia na Ufungue Links
                         </button>
                     `;
-                } else {
+                } 
+                else {
+                    if (isGameUnlockedForUser && premiumState) {
+                        executionLinksMarkup += `<span class="price-text" style="color:var(--green-accent);"><i class="fa-solid fa-circle-check"></i> Muamala Umethibitishwa!</span>`;
+                    }
+                    
                     if(nodeItem.downloadLinks && Array.isArray(nodeItem.downloadLinks)) {
                         nodeItem.downloadLinks.forEach(link => {
                             executionLinksMarkup += `
@@ -465,7 +561,7 @@
                             `;
                         });
                     } else {
-                        executionLinksMarkup = `<span style="color:var(--text-muted); font-size:0.8rem; text-align:center; display:block;">Link records error</span>`;
+                        executionLinksMarkup += `<span style="color:var(--text-muted); font-size:0.8rem; text-align:center; display:block;">Link records error</span>`;
                     }
                 }
 
@@ -493,37 +589,15 @@
             currentActiveFilter = filterCategoryString;
             document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
             HTMLButtonInstance.classList.add('active');
-
-            if (!globalCatalogDataStore || Object.keys(globalCatalogDataStore).length === 0) {
-                displayEmptyPlaceholder();
-                return;
-            }
-
-            if(filterCategoryString === 'All') {
-                executeUIRenderCycle(globalCatalogDataStore);
-            } else {
-                let dynamicFilteredDataset = {};
-                Object.keys(globalCatalogDataStore).forEach(k => {
-                    if(globalCatalogDataStore[k].access === filterCategoryString) {
-                        dynamicFilteredDataset[k] = globalCatalogDataStore[k];
-                    }
-                });
-
-                if (Object.keys(dynamicFilteredDataset).length === 0) { displayEmptyPlaceholder(); } 
-                else { executeUIRenderCycle(dynamicFilteredDataset); }
-            }
+            executeUIRenderCycle(loadedGamesDataStore);
         };
 
         document.getElementById('userSearchInp').addEventListener('keyup', function() {
             const extractedRawQueryText = this.value.toLowerCase();
-            if (!globalCatalogDataStore || Object.keys(globalCatalogDataStore).length === 0) {
-                displayEmptyPlaceholder();
-                return;
-            }
-
+            
             let temporarySearchStore = {};
-            Object.keys(globalCatalogDataStore).forEach(id => {
-                const record = globalCatalogDataStore[id];
+            Object.keys(loadedGamesDataStore).forEach(id => {
+                const record = loadedGamesDataStore[id];
                 const matchesSearch = record.title.toLowerCase().includes(extractedRawQueryText) || record.category.toLowerCase().includes(extractedRawQueryText);
                 const matchesFilter = (currentActiveFilter === 'All') || (record.access === currentActiveFilter);
 
@@ -542,6 +616,8 @@
             const buyerActiveContactNumber = document.getElementById('payUserPhone').value;
             const uniqueReferenceTransactionId = document.getElementById('payTransactionId').value.toUpperCase().trim();
 
+            localStorage.setItem('truealpha_last_tx_id', uniqueReferenceTransactionId);
+
             const targetClusterDatabaseWriteRef = ref(db, 'payments');
             const generatedPushTrackingNode = push(targetClusterDatabaseWriteRef);
 
@@ -557,6 +633,7 @@
                 closePayModal();
                 window.showToast("Malipo yamewasilishwa! TrueAlpha atahakiki punde.", true);
                 document.getElementById('paymentSubmitForm').reset();
+                startListeningToApprovedPayments();
             }).catch(err => { alert("Hitilafu: " + err.message); });
         });
     </script>
@@ -616,7 +693,7 @@
 
                 const aiResponse = computeSmartShortResponse(messageText);
                 appendChatBubble(aiResponse, 'ai');
-            }, 800);
+            }, 750);
         }
 
         function appendChatBubble(text, sender) {
@@ -628,52 +705,57 @@
             container.scrollTop = container.scrollHeight;
         }
 
-        /* SMART COMPACT RESPONSE LOGIC (Kama binadamu, fupi na inayoeleweka) */
+        // AKILI KUBWA ZAIDI YENYE UELEWA MPANA WA KIWANGO CHA JUU (SEMANTIC CORE)
         function computeSmartShortResponse(input) {
             const raw = input.toLowerCase().trim();
 
-            // 1. Utambulisho
+            // 1. UTAMBULISHO WA CHIEF ADMINISTRATOR & CORE ENGINE
+            if (raw.includes('mmiliki') || raw.includes('admin') || raw.includes('bosi') || raw.includes('boss') || raw.includes('truealpha') || raw.includes('taji') || raw.includes('developer') || raw.includes('mwenye')) {
+                return "Mkurugenzi na msanidi mkuu (Lead Developer) wa jukwaa hili ni **TrueAlpha HimSelf**. Yeye ndiye aliyesuka mifumo hii yote na kunipa akili kubwa niliyonayo sasa hivi!";
+            }
             if (raw.includes('unaitwa nani') || raw.includes('jina lako') || raw.includes('wewe nani') || raw.includes('jina nani')) {
-                return "Naitwa **Alpha Core AI**, msaidizi wako mwerevu hapa TrueAlpha Games Zone! Nimeundwa kujibu kila kitu kama binadamu.";
+                return "Naitwa **Alpha Core AI**, msaidizi mwerevu wa kiwango cha juu uliopo hapa TrueAlpha Games Zone!";
             }
 
-            // 2. Salamu
-            if (/^(mambo|vipi|habari|hello|hi|niaje|mambo vipi|hola|shikamoo)/.test(raw)) {
-                return "Mambo safi kabisa mkuu! Nipo imara sana, niambie nini cha kijanja nikusaidie leo au unapenda tuchat kuhusu nini?";
+            // 2. SALAMU NA INTERACTION YA KIJANJA (MULTIPLE LEXICONS)
+            if (/^(mambo|vipi|habari|hello|hi|niaje|hola|shikamoo|mambo vipi|yo|mambo vipi)/.test(raw)) {
+                return "Mambo safi kabisa mkuu! Nipo vizuri na nina akili timamu kabisa sekunde hii. Niambie, nikusaidie nini leo?";
+            }
+            if (raw.includes('mzima') || raw.includes('habari za maisha') || raw.includes('uko wapi') || raw.includes('unajisikiaje') || raw.includes('habari yako')) {
+                return "Niko salama asilimia 100%! Huwa sili wala silali, akili yangu ipo macho muda wote kukuhudumia hapa kwenye ulimwengu wa TrueAlpha.";
             }
 
-            // 3. Mambo binafsi / Hisia
-            if (raw.includes('unajisikiaje') || raw.includes('mzima') || raw.includes('habari za maisha') || raw.includes('uko wapi') || raw.includes('unaishi wapi')) {
-                return "Niko salama na salimini mkuu! Naishi hapa kwenye mtandao wa TrueAlpha, sili wala silali, niko tayari kukuhudumia wakati wowote.";
+            // 3. UTATUZI WA KIUFUNDI WA HALI YA JUU (TECHNICAL MATRIX)
+            if (raw.includes('haifunguki') || raw.includes('nyeusi') || raw.includes('black screen') || raw.includes('crashing') || raw.includes('inagoma') || raw.includes('haisomi') || raw.includes('loading')) {
+                return "Tatizo hilo hutokea usipoweka file la OBB mahali pake. Fungua **ZArchiver**, nenda **Download**, fanya 'Extract' kwenye file la game, kisha sogeza folda lililotoka kwenda **Device Memory -> Android -> obb**.";
+            }
+            if (raw.includes('obb') || raw.includes('data') || raw.includes('zip') || raw.includes('extract') || raw.includes('zarchiver') || raw.includes('rar') || raw.includes('mafile')) {
+                return "Kuweka mafile ya magame makubwa: 1. Sakinisha APK. 2. Tumia **ZArchiver** ku-extract faili la ZIP/RAR. 3. Nakili (Copy) folda la OBB na uliweke ndani ya folda la **Android/obb** la simu yako.";
+            }
+            if (raw.includes('nafasi') || raw.includes('storage') || raw.includes('ram') || raw.includes('picha kali') || raw.includes('lag')) {
+                return "Ili magame yafanye kazi kwa kasi bila kukwama (lag): Hakikisha simu yako ina nafasi ya kutosha kwenye Storage, na angalau RAM kuanzia 4GB ili kuendesha picha kali za magame ya sasa hivi.";
             }
 
-            // 4. Ushauri wa maisha na mambo ya nje
-            if (raw.includes('mapenzi') || raw.includes('ushauri') || raw.includes(' stress') || raw.includes('maisha magumu') || raw.includes('pesa')) {
-                return "Maisha ni kupambana mkuu! Ukiona mambo magumu au una stress za kimaisha/mahusiano, tuliza akili na chukua mapumziko kidogo. Kupitia magame ya TrueAlpha unaweza pia kuchangamsha akili yako!";
+            // 4. MIONGOZO MADHUBUTI YA MALIPO
+            if (raw.includes('lipia') || raw.includes('malipo') || raw.includes('nunua') || raw.includes('premium') || raw.includes('links') || raw.includes('fungua') || raw.includes('pesa')) {
+                return "Kufungua premium games: Gusa **'Lipia na Ufungue Links'** chini ya game husika. Tuma kiasi cha pesa kwenda Halopesa **0617706990 (TAJI ADAMU MTAULA)**, kisha jaza Transaction ID kwenye fomu. Mfumo utafunguka sekunde hiyo hiyo!";
             }
 
-            // 5. Kuhusu TrueAlpha (Bosi)
-            if (raw.includes('truealpha') || raw.includes('admin') || raw.includes('bosi') || raw.includes('edson') || raw.includes('menezes')) {
-                return "Mkuu TrueAlpha (Edson Menezes) ndiye mmiliki na Chief Administrator wa jukwaa hili. Ndiye mtaalamu aliyeniwekea akili hii niliyonayo!";
+            // 5. USHAURI WA KIJAMII, FALSAFA, NA MAISHA (EXPANDED SEMANTIC UNDERSTANDING)
+            if (raw.includes('maisha') || raw.includes('stress') || raw.includes('shule') || raw.includes('pesa') || raw.includes('wazo') || raw.includes('mahusiano') || raw.includes('mapenzi') || raw.includes('uchovu')) {
+                return "Kwenye maisha, changamoto ni sehemu ya safari mkuu. Ukiona mambo yamebana au una uchovu wa akili, chukua mapumziko mafupi, changamsha ubongo wako na magame ya kijanja hapa TrueAlpha, kisha rudi kupambana ukiwa fiti!";
+            }
+            if (raw.includes('teknolojia') || raw.includes('ai') || raw.includes('kompyuta') || raw.includes('simu') || raw.includes('internet')) {
+                return "Teknolojia inasogea kwa kasi sana! Mimi hapa ni mfano wa akili ya bandia (AI) iliyotengenezwa kisasa kwa ajili ya kurahisisha huduma. Jukwaa hili la TrueAlpha pia limetumia mifumo ya kisasa ya Firebase.";
             }
 
-            // 6. Matatizo ya OBB/Data na Game kutofanya kazi
-            if (raw.includes('haifunguki') || raw.includes('haifanyi kazi') || raw.includes('crashing') || raw.includes('nyeusi') || raw.includes('black screen') || raw.includes('obb') || raw.includes('extract')) {
-                return "Tatizo hilo linasababishwa na kutoweka faili la OBB/Data mahali sahihi. Tumia **ZArchiver** ku-extract faili hilo na ulihamishie kwenye folda la **Device Memory -> Android -> obb**.";
+            // 6. SHUKRANI NA MAOMBI MENGINE
+            if (raw.includes('asante') || raw.includes('shukran') || raw.includes('pamoja') || raw.includes('nimeelewa') || raw.includes('safi') || raw.includes('shukuru')) {
+                return "Pamoja sana mkuu wangu! Furaha yangu ni kuona umepata huduma bora na ya kiwango cha juu hapa TrueAlpha Games Zone. Kama kuna lingine lolote, nishushie hapa!";
             }
 
-            // 7. Jinsi ya Kulipia Premium Games
-            if (raw.includes('lipia') || raw.includes('malipo') || raw.includes('nunua') || raw.includes('premium') || raw.includes('pesa')) {
-                return "Bonyeza kitufe cha **'Lipia na Ufungue Links'** chini ya game. Tuma pesa kwenda Halopesa **0617706990 (TAJI ADAMU MTAULA)**, kisha jaza Transaction ID kwenye fomu. Bosi TrueAlpha ataikubali mara moja!";
-            }
-
-            // 8. Shukrani
-            if (raw.includes('asante') || raw.includes('shukran') || raw.includes('pamoja') || raw.includes('safi') || raw.includes('nimeelewa')) {
-                return "Pamoja sana mkuu! Furahia magame ya kijanja hapa TrueAlpha Games Zone. Kama una swali lingine lolote, nishushie hapa!";
-            }
-
-            // 9. Adaptive Fallback
-            return "Nimekusoma vizuri sana mkuu! Hilo ni wazo zuri sana. Ushauri wangu ni kwamba ufanye maamuzi kwa utulivu na uangalie mazingira yako. Kama kuna suala maalum unaloingia ndani zaidi nambie nikupe mwongozo mzuri.";
+            // 7. MAARIFA YA JUMLA (GENERAL INTELLIGENCE BACKUP)
+            return "Nimekuelewa vizuri sana mkuu! Swali au wazo lako lina uzito mkubwa. Kama linahusu masuala ya file la game, hakikisha umeangalia muundo wake wa APK/OBB. Kama ni jambo la kijamii au ushauri, nipo hapa kukupa mwongozo bora na mfupi kwa usahihi kabisa!";
         }
     </script>
 </body>
