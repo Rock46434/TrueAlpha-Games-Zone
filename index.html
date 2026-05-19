@@ -455,12 +455,12 @@
                 const newData = snapshot.val();
 
                 if (newData && Object.keys(newData).length > 0) {
-                    const keys = Object.keys(newData);
-                    lastLoadedKey = keys[keys.length - 1];
+                    const sortedKeys = Object.keys(newData).sort();
+                    lastLoadedKey = sortedKeys[sortedKeys.length - 1];
 
                     Object.assign(loadedGamesDataStore, newData);
 
-                    if (keys.length < ITEMS_PER_PAGE) {
+                    if (sortedKeys.length < ITEMS_PER_PAGE) {
                         hasMoreGamesToLoad = false;
                     }
 
@@ -495,9 +495,11 @@
         fetchGamesBatch(true);
 
         window.addEventListener('scroll', () => {
-            if ((window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 150)) {
+            const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+            
+            if ((scrollTop + clientHeight) >= (scrollHeight - 100)) {
                 const isSearching = document.getElementById('userSearchInp').value.trim() !== "";
-                if (!isSearching && hasMoreGamesToLoad) {
+                if (!isSearching && hasMoreGamesToLoad && !isFetchingNextBatch) {
                     fetchGamesBatch(false);
                 }
             }
@@ -517,8 +519,9 @@
             grid.innerHTML = "";
 
             let itemsToDisplay = {};
+            const sortedTargetKeys = Object.keys(targetRecords).sort();
 
-            Object.keys(targetRecords).forEach(k => {
+            sortedTargetKeys.forEach(k => {
                 if (currentActiveFilter === 'All' || targetRecords[k].access === currentActiveFilter) {
                     itemsToDisplay[k] = targetRecords[k];
                 }
@@ -705,27 +708,21 @@
             container.scrollTop = container.scrollHeight;
         }
 
-        // AKILI KUBWA ZAIDI YENYE UELEWA MPANA WA KIWANGO CHA JUU (SEMANTIC CORE)
         function computeSmartShortResponse(input) {
             const raw = input.toLowerCase().trim();
 
-            // 1. UTAMBULISHO WA CHIEF ADMINISTRATOR & CORE ENGINE
             if (raw.includes('mmiliki') || raw.includes('admin') || raw.includes('bosi') || raw.includes('boss') || raw.includes('truealpha') || raw.includes('taji') || raw.includes('developer') || raw.includes('mwenye')) {
                 return "Mkurugenzi na msanidi mkuu (Lead Developer) wa jukwaa hili ni **TrueAlpha HimSelf**. Yeye ndiye aliyesuka mifumo hii yote na kunipa akili kubwa niliyonayo sasa hivi!";
             }
             if (raw.includes('unaitwa nani') || raw.includes('jina lako') || raw.includes('wewe nani') || raw.includes('jina nani')) {
                 return "Naitwa **Alpha Core AI**, msaidizi mwerevu wa kiwango cha juu uliopo hapa TrueAlpha Games Zone!";
             }
-
-            // 2. SALAMU NA INTERACTION YA KIJANJA (MULTIPLE LEXICONS)
             if (/^(mambo|vipi|habari|hello|hi|niaje|hola|shikamoo|mambo vipi|yo|mambo vipi)/.test(raw)) {
                 return "Mambo safi kabisa mkuu! Nipo vizuri na nina akili timamu kabisa sekunde hii. Niambie, nikusaidie nini leo?";
             }
             if (raw.includes('mzima') || raw.includes('habari za maisha') || raw.includes('uko wapi') || raw.includes('unajisikiaje') || raw.includes('habari yako')) {
                 return "Niko salama asilimia 100%! Huwa sili wala silali, akili yangu ipo macho muda wote kukuhudumia hapa kwenye ulimwengu wa TrueAlpha.";
             }
-
-            // 3. UTATUZI WA KIUFUNDI WA HALI YA JUU (TECHNICAL MATRIX)
             if (raw.includes('haifunguki') || raw.includes('nyeusi') || raw.includes('black screen') || raw.includes('crashing') || raw.includes('inagoma') || raw.includes('haisomi') || raw.includes('loading')) {
                 return "Tatizo hilo hutokea usipoweka file la OBB mahali pake. Fungua **ZArchiver**, nenda **Download**, fanya 'Extract' kwenye file la game, kisha sogeza folda lililotoka kwenda **Device Memory -> Android -> obb**.";
             }
@@ -735,26 +732,19 @@
             if (raw.includes('nafasi') || raw.includes('storage') || raw.includes('ram') || raw.includes('picha kali') || raw.includes('lag')) {
                 return "Ili magame yafanye kazi kwa kasi bila kukwama (lag): Hakikisha simu yako ina nafasi ya kutosha kwenye Storage, na angalau RAM kuanzia 4GB ili kuendesha picha kali za magame ya sasa hivi.";
             }
-
-            // 4. MIONGOZO MADHUBUTI YA MALIPO
             if (raw.includes('lipia') || raw.includes('malipo') || raw.includes('nunua') || raw.includes('premium') || raw.includes('links') || raw.includes('fungua') || raw.includes('pesa')) {
                 return "Kufungua premium games: Gusa **'Lipia na Ufungue Links'** chini ya game husika. Tuma kiasi cha pesa kwenda Halopesa **0617706990 (TAJI ADAMU MTAULA)**, kisha jaza Transaction ID kwenye fomu. Mfumo utafunguka sekunde hiyo hiyo!";
             }
-
-            // 5. USHAURI WA KIJAMII, FALSAFA, NA MAISHA (EXPANDED SEMANTIC UNDERSTANDING)
             if (raw.includes('maisha') || raw.includes('stress') || raw.includes('shule') || raw.includes('pesa') || raw.includes('wazo') || raw.includes('mahusiano') || raw.includes('mapenzi') || raw.includes('uchovu')) {
                 return "Kwenye maisha, changamoto ni sehemu ya safari mkuu. Ukiona mambo yamebana au una uchovu wa akili, chukua mapumziko mafupi, changamsha ubongo wako na magame ya kijanja hapa TrueAlpha, kisha rudi kupambana ukiwa fiti!";
             }
             if (raw.includes('teknolojia') || raw.includes('ai') || raw.includes('kompyuta') || raw.includes('simu') || raw.includes('internet')) {
                 return "Teknolojia inasogea kwa kasi sana! Mimi hapa ni mfano wa akili ya bandia (AI) iliyotengenezwa kisasa kwa ajili ya kurahisisha huduma. Jukwaa hili la TrueAlpha pia limetumia mifumo ya kisasa ya Firebase.";
             }
-
-            // 6. SHUKRANI NA MAOMBI MENGINE
             if (raw.includes('asante') || raw.includes('shukran') || raw.includes('pamoja') || raw.includes('nimeelewa') || raw.includes('safi') || raw.includes('shukuru')) {
                 return "Pamoja sana mkuu wangu! Furaha yangu ni kuona umepata huduma bora na ya kiwango cha juu hapa TrueAlpha Games Zone. Kama kuna lingine lolote, nishushie hapa!";
             }
 
-            // 7. MAARIFA YA JUMLA (GENERAL INTELLIGENCE BACKUP)
             return "Nimekuelewa vizuri sana mkuu! Swali au wazo lako lina uzito mkubwa. Kama linahusu masuala ya file la game, hakikisha umeangalia muundo wake wa APK/OBB. Kama ni jambo la kijamii au ushauri, nipo hapa kukupa mwongozo bora na mfupi kwa usahihi kabisa!";
         }
     </script>
