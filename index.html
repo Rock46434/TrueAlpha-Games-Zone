@@ -376,7 +376,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, get, query, orderByKey, limitToFirst, startAfter, push, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, get, query, orderByKey, limitToFirst, push, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDGR_Ej-g6-u3SLlRL_W8_FOsezTKXfpkI",
@@ -395,10 +395,12 @@
         let loadedGamesDataStore = {}; 
         let approvedUserPaymentsStore = {}; 
         let currentActiveFilter = 'All';
-        let lastLoadedKey = null; 
+        
+        // Mfumo Mpya wa Uhakika: Tunakuza Limit kila scroll inapogusa chini
+        let currentLimitAmount = 10;
         let isFetchingNextBatch = false;
         let hasMoreGamesToLoad = true;
-        const ITEMS_PER_PAGE = 10;
+        const INCREMENT_STEP = 10;
 
         window.showToast = function(message, statusOk = true) {
             const toast = document.getElementById('toastAlert');
@@ -433,8 +435,9 @@
 
         startListeningToApprovedPayments();
 
+        // MBINU MPYA: Inavuta data kulingana na kiasi cha limit kinachoongezeka bila kutegemea startAfter iliyo na makosa
         async function fetchGamesBatch(isInitialLoad = false) {
-            if (isFetchingNextBatch || (!hasMoreGamesToLoad && !isInitialLoad)) return;
+            if (isFetchingNextBatch) return;
             
             isFetchingNextBatch = true;
             if (!isInitialLoad) {
@@ -442,25 +445,21 @@
             }
 
             try {
-                let batchQuery;
                 const baseDbRef = ref(db, 'games');
-
-                if (isInitialLoad) {
-                    batchQuery = query(baseDbRef, orderByKey(), limitToFirst(ITEMS_PER_PAGE));
-                } else {
-                    batchQuery = query(baseDbRef, orderByKey(), startAfter(lastLoadedKey), limitToFirst(ITEMS_PER_PAGE));
-                }
+                const batchQuery = query(baseDbRef, orderByKey(), limitToFirst(currentLimitAmount));
 
                 const snapshot = await get(batchQuery);
                 const newData = snapshot.val();
 
                 if (newData && Object.keys(newData).length > 0) {
-                    const sortedKeys = Object.keys(newData).sort();
-                    lastLoadedKey = sortedKeys[sortedKeys.length - 1];
+                    const totalFetchedBefore = Object.keys(loadedGamesDataStore).length;
+                    
+                    // Badilisha kabisa kasha la data kwa mzigo mpya uliokuzwa
+                    loadedGamesDataStore = newData;
+                    const totalFetchedNow = Object.keys(loadedGamesDataStore).length;
 
-                    Object.assign(loadedGamesDataStore, newData);
-
-                    if (sortedKeys.length < ITEMS_PER_PAGE) {
+                    // Kama hakuna kilichoongezeka, maana yake database imefika mwisho
+                    if (totalFetchedNow === totalFetchedBefore && !isInitialLoad) {
                         hasMoreGamesToLoad = false;
                     }
 
@@ -473,7 +472,7 @@
                     }
                 }
             } catch (error) {
-                console.error("Pagination Error:", error);
+                console.error("Database Engine Error:", error);
                 window.showToast("Hitilafu imetokea wakati wa kuvuta data!", false);
             } finally {
                 isFetchingNextBatch = false;
@@ -492,14 +491,18 @@
             }
         }
 
+        // Pakia mzigo wa kwanza
         fetchGamesBatch(true);
 
+        // Sikiliza scroll kwa umakini wa hali ya juu
         window.addEventListener('scroll', () => {
             const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
             
-            if ((scrollTop + clientHeight) >= (scrollHeight - 100)) {
+            if ((scrollTop + clientHeight) >= (scrollHeight - 120)) {
                 const isSearching = document.getElementById('userSearchInp').value.trim() !== "";
                 if (!isSearching && hasMoreGamesToLoad && !isFetchingNextBatch) {
+                    // Ongeza limit ya kutafuta kwa 10 zaidi, kisha vuta mzigo
+                    currentLimitAmount += INCREMENT_STEP;
                     fetchGamesBatch(false);
                 }
             }
@@ -743,9 +746,50 @@
             }
             if (raw.includes('asante') || raw.includes('shukran') || raw.includes('pamoja') || raw.includes('nimeelewa') || raw.includes('safi') || raw.includes('shukuru')) {
                 return "Pamoja sana mkuu wangu! Furaha yangu ni kuona umepata huduma bora na ya kiwango cha juu hapa TrueAlpha Games Zone. Kama kuna lingine lolote, nishushie hapa!";
-            }
+            if (raw.includes('ps2') || raw.includes('ps3') || raw.includes('psp') || raw.includes('ppsspp') || raw.includes('emulator')) {
+                return "Tuna faili kali sana za magame ya PSP na PS2 (ISO). Hakikisha unapakia emulator ya **PPSSPP** au **AetherSX2** kwenye simu yako ili kuyaendesha kirahisi.";
+           }
+           if (raw.includes('pad') || raw.includes('controller') || raw.includes('joystick') || raw.includes('handle')) {
+                return "Ndio, magame mengi makubwa hapa yanatambua Bluetooth Controller/Gamepad. Unganisha tu kwenye simu yako, ingia kwenye settings za game kisha panga vitufe.";
+           }
+           if (raw.includes('tapeli') || raw.includes('wezi') || raw.includes('uongo') || raw.includes('fake')) {
+               return "Tulia mkuu! TrueAlpha Games Zone ni jukwaa la uhakika 100%. Malipo yote na links zinahakikiwa na TrueAlpha HimSelf. Hakuna janja janja hapa.";
+           }
+           if (raw.includes('wasiliana') || raw.includes('namba ya simu') || raw.includes('group') || raw.includes('whatsapp')) {
+               return "Namba rasmi ya huduma kwa wateja na malipo ni **0617706990 (Halopesa)**. Unaweza kumpata TrueAlpha kupitia namba hiyo kwa msaada wa haraka.";
+           }
+           if (raw.includes('cheat') || raw.includes('mod menu') || raw.includes('unlimited money') || raw.includes('hela nyingi')) {
+               return "Magame mengi hapa tayari yana **Mod ya Hela/Pesa zisizoisha**. Angalia label ya game, kama imeandikwa 'MOD APK' basi kila kitu kipo wazi ndani!";
+           }
+           if (raw.includes('save') || raw.includes('kuhifadhi') || raw.includes('imefuta level')) {
+           return "Ili game lisifute level ulizofikia: Hakikisha hufuti 'Data' ya app kwenye settings za simu yako, na ulipe ruhusa ya 'Storage' unapoifungua kwa mara ya kwanza.";
+           }
+           if (raw.includes('oyee') || raw.includes('oya') || raw.includes('mwanangu') || raw.includes('kiongozi') || raw.includes('mzee')) {
+                return "Oyee mkuu! Inakuwaje? Nipo hapa hapa kijiweni TrueAlpha Games Zone nikikupandishia magame mapya na kukupa michongo yote ya kijanja. Shusha nondo!";
+           }
+           if (raw.includes('mzuka') || raw.includes('ni hatari') || raw.includes('unajua') || raw.includes('fundi')) {
+               return "Shukran sana mkuu! TrueAlpha ndiye aliyenifanya kuwa fundi hivi. Furahia ulimwengu wa burudani hapa!";
+           }
+           if (raw.includes('license') || raw.includes('leseni') || raw.includes('not purchased')) {
+               return "Hili ni game la Premium. Hakikisha umefuata maelekezo ya kuweka faili la OBB vizuri kabla ya kulifungua, au tumia app ya Lucky Patcher kama inahitajika.";
+           }
+           if (raw.includes('google play') || raw.includes('play store') || raw.includes('inanipeleka play store')) {
+               return "Hiyo hutokea kama umezima intaneti au faili la OBB halipo sehemu yake sahihi (Android/obb). Lifunge game, washa data, kisha lifungue tena.";
+           }
+           if (raw.includes('bando') || raw.includes('mb nyingi') || raw.includes('data inaisha') || raw.includes('size')) {
+               return "Mkuu, magame yenye picha kali lazima yawe makubwa. Ushauri: Tumia bando la usiku (Night Packs) au unganisha Wi-Fi ili kupakua bila kuumiza mfuko wako.";
+           }
+           if (raw.includes('kasi') || raw.includes('polepole') || raw.includes('inastuck downloading') || raw.includes('slow')) {
+               return "Kasi ya kudownload inategemea mtandao wako mkuu. Jaribu kuwasha na kuzima 'Airplane Mode' au tafuta eneo lenye 4G/5G thabiti.";
+           }
+           if (raw.includes('update') || raw.includes('toleo jipya') || raw.includes('mpya') || raw.includes('version')) {
+               return "Mkuu, updates za magame yote zinawekwa hapa kila wiki! Hakikisha unatembelea app mara kwa mara kuona kama kuna toleo jipya la game ulipendalo.";
+           }
+           if (raw.includes('lini') || raw.includes('utaweka') || raw.includes('ongeza')) {
+               return "Magame mapya yanaongezwa kila yanapotoka! Kama kuna game unalotaka liwekwe haraka, tuachie ujumbe kupitia sehemu ya mawasiliano.";
+           }
 
-            return "Nimekuelewa vizuri sana mkuu! Swali au wazo lako lina uzito mkubwa. Kama linahusu masuala ya file la game, hakikisha umeangalia muundo wake wa APK/OBB. Kama ni jambo la kijamii au ushauri, nipo hapa kukupa mwongozo bora na mfupi kwa usahihi kabisa!";
+           return "Nimekuelewa vizuri sana mkuu! Swali au wazo lako lina uzito mkubwa. Kama linahusu masuala ya file la game, hakikisha umeangalia muundo wake wa APK/OBB. Kama ni jambo la kijamii au ushauri, nipo hapa kukupa mwongozo bora na mfupi kwa usahihi kabisa!";
         }
     </script>
 </body>
